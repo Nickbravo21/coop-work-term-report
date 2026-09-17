@@ -43,6 +43,15 @@
     background-color: #DC2626;
     color: #fff;
   }
+  .tab-pill:hover:not([aria-selected="true"]) {
+    background-color: #f1f5f9;
+  }
+  .tab-pill {
+    transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
+  }
+  .tab-pill:active {
+    transform: scale(0.96);
+  }
   a:focus-visible,
   button:focus-visible {
     outline: 2px solid #DC2626;
@@ -62,6 +71,32 @@
     padding: 0.75rem 1.25rem;
     border-radius: 0.5rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+  /* Uniform lift-on-hover for every card/figure using the shared card classes */
+  .bg-white.border-slate-200.rounded-xl {
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+  }
+  .bg-white.border-slate-200.rounded-xl:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 14px 28px -10px rgba(15, 23, 42, 0.16);
+  }
+  figure img {
+    transition: transform 0.5s ease;
+  }
+  figure:hover img {
+    transform: scale(1.05);
+  }
+  #mobile-menu {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+  }
+  #mobile-menu.open {
+    max-height: 24rem;
+  }
+  .hamburger-icon,
+  .close-icon {
+    transition: opacity 0.2s ease, transform 0.2s ease;
   }
 </style>
 </head>
@@ -91,8 +126,32 @@
       <li><a href="#reflection" class="hover:text-accent transition-colors rounded-sm">Reflection</a></li>
       <li><a href="#acknowledgments" class="hover:text-accent transition-colors rounded-sm">Thanks</a></li>
     </ul>
-    <a href="#about" class="md:hidden text-sm font-semibold text-accent rounded-sm">Menu ↓</a>
+    <button
+      id="mobile-menu-button"
+      class="md:hidden relative w-9 h-9 flex items-center justify-center rounded-md text-slate-600 hover:text-accent hover:bg-slate-100 transition-colors"
+      aria-expanded="false"
+      aria-controls="mobile-menu"
+      aria-label="Toggle navigation menu"
+      onclick="toggleMobileMenu()"
+    >
+      <svg class="hamburger-icon w-6 h-6" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5M3.75 17.25h16.5" />
+      </svg>
+      <svg class="close-icon w-6 h-6 hidden absolute" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.75" aria-hidden="true">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+      </svg>
+    </button>
   </nav>
+  <div id="mobile-menu" class="md:hidden border-t border-slate-200 bg-white">
+    <ul class="flex flex-col px-6 py-2 text-sm font-medium text-slate-600">
+      <li><a href="#about" onclick="closeMobileMenu()" class="block py-3 hover:text-accent transition-colors">About</a></li>
+      <li><a href="#iss" onclick="goToTab(event, 'iss'); closeMobileMenu()" class="block py-3 hover:text-accent transition-colors">ISS</a></li>
+      <li><a href="#inno-pod" onclick="goToTab(event, 'inno-pod'); closeMobileMenu()" class="block py-3 hover:text-accent transition-colors">Innovation Pod</a></li>
+      <li><a href="#goals" onclick="closeMobileMenu()" class="block py-3 hover:text-accent transition-colors">Goals</a></li>
+      <li><a href="#reflection" onclick="closeMobileMenu()" class="block py-3 hover:text-accent transition-colors">Reflection</a></li>
+      <li><a href="#acknowledgments" onclick="closeMobileMenu()" class="block py-3 hover:text-accent transition-colors">Thanks</a></li>
+    </ul>
+  </div>
 </header>
 
 <!-- ==================== HERO ==================== -->
@@ -494,6 +553,24 @@
     event.preventDefault();
     showTab(id);
     document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function toggleMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const button = document.getElementById('mobile-menu-button');
+    const isOpen = menu.classList.toggle('open');
+    button.setAttribute('aria-expanded', String(isOpen));
+    button.querySelector('.hamburger-icon').classList.toggle('hidden', isOpen);
+    button.querySelector('.close-icon').classList.toggle('hidden', !isOpen);
+  }
+
+  function closeMobileMenu() {
+    const menu = document.getElementById('mobile-menu');
+    const button = document.getElementById('mobile-menu-button');
+    menu.classList.remove('open');
+    button.setAttribute('aria-expanded', 'false');
+    button.querySelector('.hamburger-icon').classList.remove('hidden');
+    button.querySelector('.close-icon').classList.add('hidden');
   }
 </script>
 
